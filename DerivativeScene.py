@@ -13,7 +13,9 @@ class DerivativesScene(Scene):
 
     def construct(self):
         self.derivative_showcase_0()
-        # self.explore_dual_numbers_1()
+        self.explore_dual_numbers_1()
+        self.finding_derivative_2()
+        self.exercise_3()
 
     def derivative_showcase_0(self):
         axes = Axes(
@@ -111,9 +113,242 @@ class DerivativesScene(Scene):
         self.play(
             Transform(varepsilon, varepsilon_squared)
         )
-        self.play(Transform(varepsilon_squared, varepsilon_square_equals_0))
+        self.play(Transform(varepsilon, varepsilon_square_equals_0))
         self.wait(0.5)
         self.play(
-            Transform(varepsilon_square_equals_0, generalised_dual_number)
+            Transform(varepsilon, generalised_dual_number)
         )
+        self.wait(1)
+        self.play(FadeOut(varepsilon))
+        self.wait(1)
+        
+        title_mul = Tex("Multiplication").to_corner(UL).scale(0.9)
+        expr0 = MathTex(r"(3 + 4 \varepsilon)\cdot(2 + 1 \varepsilon)").scale(1.2)
+        self.play(Write(title_mul), Write(expr0))
 
+        expr1 = MathTex(
+            r"(3 + 4 \varepsilon)\cdot(2 + 1 \varepsilon)",
+            r"=",
+            r"3\cdot 2",
+            r"+",
+            r"3\cdot 1\varepsilon",
+            r"+",
+            r"4\varepsilon\cdot 2",
+            r"+",
+            r"4\varepsilon\cdot 1\varepsilon",
+        ).move_to(expr0)
+        self.play(TransformMatchingTex(expr0, expr1, path_arc=0.2))
+        self.wait(0.2)
+
+        expr2 = MathTex(
+            r"(3 + 4 \varepsilon)\cdot(2 + 1 \varepsilon)",
+            r"=",
+            r"6",
+            r"+",
+            r"3\varepsilon",
+            r"+",
+            r"8\varepsilon",
+            r"+",
+            r"4\varepsilon^2",
+        ).move_to(expr1)
+        self.play(TransformMatchingTex(expr1, expr2, path_arc=0.15))
+        self.wait(0.2)
+
+        expr3 = MathTex(
+            r"(3 + 4 \varepsilon)\cdot(2 + 1 \varepsilon)",
+            r"=",
+            r"6",
+            r"+",
+            r"11\varepsilon",
+            r"+",
+            r"4\varepsilon^2",
+        ).move_to(expr2)
+        self.play(TransformMatchingTex(expr2, expr3, path_arc=0.1))
+        self.wait(0.2)
+
+        bad_term = expr3.get_part_by_tex(r"4\varepsilon^2")
+        cross = Cross(bad_term, color=RED, stroke_width=8).scale(1.10)
+        self.play(Create(cross))
+        self.wait(0.2)
+
+        expr4 = MathTex(
+            r"(3 + 4 \varepsilon)\cdot(2 + 1 \varepsilon)",
+            r"=",
+            r"6 + 11\varepsilon",
+        ).move_to(expr3)
+        self.play(
+            TransformMatchingTex(expr3, expr4, path_arc=0.1),
+            FadeOut(cross)
+        )
+        self.wait(0.6)
+
+        self.play(FadeOut(expr4), FadeOut(title_mul))
+        title_div = Tex("Division").to_corner(UL).scale(0.9)
+        div0 = MathTex(r"\frac{1}{a + b \varepsilon}").scale(1.2)
+        self.play(Write(title_div), Write(div0))
+
+        div1 = MathTex(
+            r"\frac{1}{a + b \varepsilon}",
+            r"=",
+            r"\frac{1}{a + b \varepsilon}\cdot\frac{a - b \varepsilon}{a - b \varepsilon}",
+        ).move_to(div0)
+        self.play(TransformMatchingTex(div0, div1, path_arc=0.15))
+
+        div2 = MathTex(
+            r"\frac{1}{a + b \varepsilon}",
+            r"=",
+            r"\frac{a - b \varepsilon}{a^2 - (b \varepsilon)^2}",
+        ).move_to(div1)
+        self.play(TransformMatchingTex(div1, div2, path_arc=0.15))
+
+        div3 = MathTex(
+            r"\frac{1}{a + b \varepsilon}",
+            r"=",
+            r"\frac{a - b \varepsilon}{a^2}",
+        ).move_to(div2)
+        self.play(TransformMatchingTex(div2, div3, path_arc=0.12))
+
+        note = Tex(r"valid only if $a\neq 0$").scale(0.8).next_to(div3, DOWN)
+        self.play(FadeIn(note, shift=UP*0.2))
+
+        bad_frac = MathTex(r"\frac{1}{b \varepsilon}").next_to(div3, DOWN, buff=1.1)
+        self.play(Write(bad_frac))
+        cross2 = Cross(bad_frac, color=RED, stroke_width=8).scale(1.05)
+        self.play(Create(cross2))
+        caption = Tex(r"cannot divide by $b\varepsilon$ (since $\varepsilon^2=0$)").scale(0.7)
+        caption.next_to(bad_frac, DOWN, buff=0.25)
+        self.play(FadeIn(caption, shift=UP*0.2))
+        self.wait(1.2)
+        self.play(
+            FadeOut(title_div),
+            FadeOut(div3),
+            FadeOut(note),
+            FadeOut(bad_frac),
+            FadeOut(cross2),
+            FadeOut(caption)
+        )
+        self.wait(2)
+
+
+    def finding_derivative_2(self):
+        d_def = MathTex(
+            r"\mathbb{D} = \{ a + b \varepsilon \mid a, b \in \mathbb{R} \} = \{ \text{Dual numbers} \}"
+        ).scale(0.9)
+        self.play(Write(d_def))
+        self.wait(0.6)
+        self.play(FadeOut(d_def))
+
+        f_real = MathTex(
+            r"f : \mathbb{R} \to \mathbb{R}, \,", r"f(x) = x^2 + 3x + 5"
+        ).to_edge(DOWN, buff=3.0)
+        self.play(Write(f_real))
+
+        f_dual = MathTex(
+            r"f : \mathbb{D} \to \mathbb{D}, \,", r"f(u) = u^2 + 3u + 5"
+        ).to_edge(UP, buff=3.0)
+        self.play(Transform(f_real, f_dual))
+        self.wait(0.3)
+
+        self.play(
+            FadeOut(f_real[0]),
+            f_real[1].animate.move_to(ORIGIN)
+        )
+        self.wait(0.2)
+        equation = f_real[1]
+
+        f_input = MathTex(
+            r"f(x + \varepsilon) = ", r"(x + \varepsilon)^2 + 3(x + \varepsilon) + 5"
+        ).move_to(equation)
+        self.play(Transform(equation, f_input, path_arc=0.2))
+        self.wait(0.2)
+
+        expand = MathTex(
+            r"f(x + \varepsilon) = ", r"x^2 + 2x\varepsilon + \varepsilon^2 + 3x + 3\varepsilon + 5"
+        ).move_to(f_input)
+        self.play(Transform(equation, expand, path_arc=0.15))
+        self.wait(0.2)
+
+        group_terms = MathTex(
+            r"f(x + \varepsilon) = ", r"(x^2 + 3x + 5) + (2x + 3)\cdot \varepsilon + \varepsilon^2"
+        ).move_to(equation)
+        self.play(Transform(equation, group_terms, path_arc=0.12))
+        self.wait(0.2)
+
+        simplified = MathTex(
+            r"f(x + \varepsilon) =", r"(x^2 + 3x + 5) + (2x + 3)\cdot \varepsilon"
+        ).move_to(group_terms)
+        self.play(Transform(equation, simplified, path_arc=0.1))
+        self.wait(0.3)
+
+        final = MathTex(
+            r"f(x + \varepsilon) =", r"f(x) + f^\prime(x)\,\varepsilon"
+        ).move_to(simplified)
+        self.play(Transform(equation, final, path_arc=0.12))
+        self.wait(1.0)
+        self.play(FadeOut(equation))
+        self.wait(0.5)
+
+
+    def exercise_3(self):
+        exercise = VGroup(
+            Tex(r"Exercise").scale(0.9).set_color(YELLOW),
+            Tex(r"Show that for any polynomial"),
+            MathTex(r"p(x) &= \sum_{i=0}^n a_i \, x^i"),
+            Tex(r"We have that"),
+            MathTex(r"p(x + \varepsilon) &= p(x) + p'(x)\,\varepsilon")
+        ).arrange(DOWN).to_edge(UP)
+        self.play(FadeIn(exercise, aligned_edge=LEFT, shift=DOWN))
+        self.wait(4.0) 
+
+        self.play(
+            FadeOut(exercise)
+        )
+        proof_title = Tex("Proof").to_corner(UL).scale(0.9)
+        self.play(Write(proof_title))
+
+        s1 = MathTex(
+            r"p(x + \varepsilon)", r"=", r"\sum_{i = 0}^n a_i\,(x + \varepsilon)^i"
+        ).scale(1.0).to_edge(UP, buff=2.0)
+        self.play(Write(s1))
+        self.wait(0.25)
+
+        s2 = MathTex(
+            r"p(x + \varepsilon)", r"=",
+            r"\sum_{i = 0}^n a_i \sum_{k = 0}^{i} \binom{i}{k} x^{\,i-k}\varepsilon^{k}"
+        ).move_to(s1)
+        self.play(TransformMatchingTex(s1, s2, path_arc=0.2))
+        self.wait(0.25)
+
+        note = Tex(r"$\varepsilon^2 = 0\ \Rightarrow\ k\ge 2 \text{ terms vanish}$").scale(0.7)
+        note.next_to(s2, DOWN, buff=0.25)
+        self.play(FadeIn(note, shift=UP*0.2))
+        self.play(Circumscribe(s2, color=YELLOW, time_width=0.6))
+        self.wait(0.2)
+
+        s3 = MathTex(
+            r"p(x + \varepsilon)", r"=",
+            r"\sum_{i = 0}^n a_i \Big(x^i + i\,x^{\,i-1}\varepsilon\Big)"
+        ).move_to(s2)
+        self.play(TransformMatchingTex(s2, s3, path_arc=0.15), FadeOut(note))
+        self.wait(0.25)
+
+        s4 = MathTex(
+            r"p(x + \varepsilon)", r"=",
+            r"\sum_{i=0}^n a_i x^i",
+            r"+",
+            r"\varepsilon \sum_{i=0}^n i\,a_i\,x^{\,i-1}"
+        ).move_to(s3)
+        self.play(TransformMatchingTex(s3, s4, path_arc=0.12))
+        self.wait(0.25)
+
+        s5 = MathTex(
+            r"p(x+\varepsilon)", r"=", r"p(x)", r"+", r"p'(x)\,\varepsilon"
+        ).move_to(s4)
+        self.play(TransformMatchingTex(s4, s5, path_arc=0.12))
+        self.play(Indicate(s5[-3], color=BLUE), Indicate(s5[-1], color=BLUE))
+        self.wait(0.8)
+
+        qedsym = MathTex(r"\square").scale(0.9).next_to(s5, RIGHT, buff=0.3)
+        self.play(FadeIn(qedsym, shift=RIGHT*0.2))
+        self.wait(0.8)
+        self.play(FadeOut(s5), FadeOut(proof_title), FadeOut(qedsym))
