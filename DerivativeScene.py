@@ -2,15 +2,6 @@ from manim import *
 import math
 
 class DerivativesScene(Scene):
-    """
-    Shows that the derivative equals the slope of the tangent line at a point.
-    - Blue: original function f(x)
-    - Orange: tangent line at x0
-    - Yellow dot: point (x0, f(x0)) moving along the curve
-    - Green: derivative curve f'(x) (numerically approximated)
-    - Green dot: (x0, f'(x0))
-    """
-
     def construct(self):
         self.derivative_showcase_0()
         self.explore_dual_numbers_1()
@@ -211,21 +202,11 @@ class DerivativesScene(Scene):
         note = Tex(r"valid only if $a\neq 0$").scale(0.8).next_to(div3, DOWN)
         self.play(FadeIn(note, shift=UP*0.2))
 
-        bad_frac = MathTex(r"\frac{1}{b \varepsilon}").next_to(div3, DOWN, buff=1.1)
-        self.play(Write(bad_frac))
-        cross2 = Cross(bad_frac, color=RED, stroke_width=8).scale(1.05)
-        self.play(Create(cross2))
-        caption = Tex(r"cannot divide by $b\varepsilon$ (since $\varepsilon^2=0$)").scale(0.7)
-        caption.next_to(bad_frac, DOWN, buff=0.25)
-        self.play(FadeIn(caption, shift=UP*0.2))
         self.wait(1.2)
         self.play(
             FadeOut(title_div),
             FadeOut(div3),
-            FadeOut(note),
-            FadeOut(bad_frac),
-            FadeOut(cross2),
-            FadeOut(caption)
+            FadeOut(note)
         )
         self.wait(2)
 
@@ -269,16 +250,26 @@ class DerivativesScene(Scene):
         self.wait(0.2)
 
         group_terms = MathTex(
-            r"f(x + \varepsilon) = ", r"(x^2 + 3x + 5) + (2x + 3)\cdot \varepsilon + \varepsilon^2"
-        ).move_to(equation)
+            r"f(x + \varepsilon) = ",
+            r"(x^2 + 3x + 5) + (2x + 3)\cdot \varepsilon",
+            r"+",
+            r"\varepsilon^2"
+        )
         self.play(Transform(equation, group_terms, path_arc=0.12))
+        self.wait(0.2)
+
+        cross = Cross(group_terms[3], color=RED, stroke_width=8).scale(1.10)
+        self.play(Create(cross))
         self.wait(0.2)
 
         simplified = MathTex(
             r"f(x + \varepsilon) =", r"(x^2 + 3x + 5) + (2x + 3)\cdot \varepsilon"
-        ).move_to(group_terms)
-        self.play(Transform(equation, simplified, path_arc=0.1))
-        self.wait(0.3)
+        )
+        self.play(
+            FadeOut(cross), 
+            Transform(equation, equation[0:4], path_arc=0.12)
+        )
+        self.wait(1)
 
         final = MathTex(
             r"f(x + \varepsilon) =", r"f(x) + f^\prime(x)\,\varepsilon"
