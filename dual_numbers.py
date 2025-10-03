@@ -1,7 +1,7 @@
 from manim import *
 import math
 
-class DerivativesScene(Scene):
+class DualNumbersAnimation(Scene):
     def construct(self):
         self.derivative_showcase_0()
         self.explore_dual_numbers_1()
@@ -75,13 +75,14 @@ class DerivativesScene(Scene):
         )
 
         self.play(x0.animate.set_value(x_max - delta), 
-                    run_time=6, 
+                    run_time=17, 
                     rate_func=
                         lambda t: 
                             0.5 - 0.5 * math.cos(2 * PI * t) 
                                 if t < 1 / 2 
                                 else 0.75 - 0.25 * math.cos(2 * PI * t)
                     )
+        self.wait(2)
         self.play(
             FadeOut(tangent_line),
             FadeOut(dot), 
@@ -90,7 +91,7 @@ class DerivativesScene(Scene):
             FadeOut(axes),
             FadeOut(x_label, y_label)
         )
-        self.wait(1)
+        self.wait(6)
     
     def explore_dual_numbers_1(self):
         varepsilon: MathTex = MathTex(r"\varepsilon")
@@ -101,21 +102,23 @@ class DerivativesScene(Scene):
         self.play(
             FadeIn(varepsilon)
         )
+        self.wait(0.5)
         self.play(
             Transform(varepsilon, varepsilon_squared)
         )
         self.play(Transform(varepsilon, varepsilon_square_equals_0))
-        self.wait(0.5)
+        self.wait(5)
         self.play(
             Transform(varepsilon, generalised_dual_number)
         )
-        self.wait(1)
+        self.wait(8)
         self.play(FadeOut(varepsilon))
         self.wait(1)
         
         title_mul = Tex("Multiplication").to_corner(UL).scale(0.9)
         expr0 = MathTex(r"(3 + 4 \varepsilon)\cdot(2 + 1 \varepsilon)").scale(1.2)
         self.play(Write(title_mul), Write(expr0))
+        self.wait(5)
 
         expr1 = MathTex(
             r"(3 + 4 \varepsilon)\cdot(2 + 1 \varepsilon)",
@@ -129,7 +132,7 @@ class DerivativesScene(Scene):
             r"4\varepsilon\cdot 1\varepsilon",
         ).move_to(expr0)
         self.play(TransformMatchingTex(expr0, expr1, path_arc=0.2))
-        self.wait(0.2)
+        self.wait(2.2)
 
         expr2 = MathTex(
             r"(3 + 4 \varepsilon)\cdot(2 + 1 \varepsilon)",
@@ -143,7 +146,7 @@ class DerivativesScene(Scene):
             r"4\varepsilon^2",
         ).move_to(expr1)
         self.play(TransformMatchingTex(expr1, expr2, path_arc=0.15))
-        self.wait(0.2)
+        self.wait(2)
 
         expr3 = MathTex(
             r"(3 + 4 \varepsilon)\cdot(2 + 1 \varepsilon)",
@@ -155,7 +158,7 @@ class DerivativesScene(Scene):
             r"4\varepsilon^2",
         ).move_to(expr2)
         self.play(TransformMatchingTex(expr2, expr3, path_arc=0.1))
-        self.wait(0.2)
+        self.wait(2)
 
         bad_term = expr3.get_part_by_tex(r"4\varepsilon^2")
         cross = Cross(bad_term, color=RED, stroke_width=8).scale(1.10)
@@ -184,13 +187,14 @@ class DerivativesScene(Scene):
             r"\frac{1}{a + b \varepsilon}\cdot\frac{a - b \varepsilon}{a - b \varepsilon}",
         ).move_to(div0)
         self.play(TransformMatchingTex(div0, div1, path_arc=0.15))
-
+        self.wait(4)
         div2 = MathTex(
             r"\frac{1}{a + b \varepsilon}",
             r"=",
             r"\frac{a - b \varepsilon}{a^2 - (b \varepsilon)^2}",
         ).move_to(div1)
         self.play(TransformMatchingTex(div1, div2, path_arc=0.15))
+        self.wait(3)
 
         div3 = MathTex(
             r"\frac{1}{a + b \varepsilon}",
@@ -198,11 +202,11 @@ class DerivativesScene(Scene):
             r"\frac{a - b \varepsilon}{a^2}",
         ).move_to(div2)
         self.play(TransformMatchingTex(div2, div3, path_arc=0.12))
-
+        self.wait(3)
         note = Tex(r"valid only if $a\neq 0$").scale(0.8).next_to(div3, DOWN)
         self.play(FadeIn(note, shift=UP*0.2))
 
-        self.wait(1.2)
+        self.wait(5)
         self.play(
             FadeOut(title_div),
             FadeOut(div3),
@@ -216,38 +220,38 @@ class DerivativesScene(Scene):
             r"\mathbb{D} = \{ a + b \varepsilon \mid a, b \in \mathbb{R} \} = \{ \text{Dual numbers} \}"
         ).scale(0.9)
         self.play(Write(d_def))
-        self.wait(0.6)
+        self.wait(5.6)
         self.play(FadeOut(d_def))
 
         f_real = MathTex(
             r"f : \mathbb{R} \to \mathbb{R}, \,", r"f(x) = x^2 + 3x + 5"
         ).to_edge(DOWN, buff=3.0)
         self.play(Write(f_real))
-
+        self.wait(2.5)
         f_dual = MathTex(
             r"f : \mathbb{D} \to \mathbb{D}, \,", r"f(u) = u^2 + 3u + 5"
         ).to_edge(UP, buff=3.0)
         self.play(Transform(f_real, f_dual))
-        self.wait(0.3)
+        self.wait(1)
 
         self.play(
             FadeOut(f_real[0]),
             f_real[1].animate.move_to(ORIGIN)
         )
-        self.wait(0.2)
+        self.wait(2)
         equation = f_real[1]
 
         f_input = MathTex(
             r"f(x + \varepsilon) = ", r"(x + \varepsilon)^2 + 3(x + \varepsilon) + 5"
         ).move_to(equation)
         self.play(Transform(equation, f_input, path_arc=0.2))
-        self.wait(0.2)
+        self.wait(2)
 
         expand = MathTex(
             r"f(x + \varepsilon) = ", r"x^2 + 2x\varepsilon + \varepsilon^2 + 3x + 3\varepsilon + 5"
         ).move_to(f_input)
         self.play(Transform(equation, expand, path_arc=0.15))
-        self.wait(0.2)
+        self.wait(1)
 
         group_terms = MathTex(
             r"f(x + \varepsilon) = ",
@@ -256,11 +260,11 @@ class DerivativesScene(Scene):
             r"\varepsilon^2"
         )
         self.play(Transform(equation, group_terms, path_arc=0.12))
-        self.wait(0.2)
+        self.wait(0.5)
 
         cross = Cross(group_terms[3], color=RED, stroke_width=8).scale(1.10)
         self.play(Create(cross))
-        self.wait(0.2)
+        self.wait(0.5)
 
         simplified = MathTex(
             r"f(x + \varepsilon) =", r"(x^2 + 3x + 5) + (2x + 3)\cdot \varepsilon"
@@ -269,13 +273,13 @@ class DerivativesScene(Scene):
             FadeOut(cross), 
             Transform(equation, equation[0:4], path_arc=0.12)
         )
-        self.wait(1)
+        self.wait(3)
 
         final = MathTex(
             r"f(x + \varepsilon) =", r"f(x) + f^\prime(x)\,\varepsilon"
         ).move_to(simplified)
         self.play(Transform(equation, final, path_arc=0.12))
-        self.wait(1.0)
+        self.wait(10.5)
         self.play(FadeOut(equation))
         self.wait(0.5)
 
@@ -289,7 +293,7 @@ class DerivativesScene(Scene):
             MathTex(r"p(x + \varepsilon) &= p(x) + p'(x)\,\varepsilon")
         ).arrange(DOWN).to_edge(UP)
         self.play(FadeIn(exercise, aligned_edge=LEFT, shift=DOWN))
-        self.wait(4.0) 
+        self.wait(8) 
 
         self.play(
             FadeOut(exercise)

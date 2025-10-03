@@ -7,6 +7,12 @@ def main():
     print(number.sin())
 
 class RealDual:
+    """
+    Implementation of dual numbers with real components.
+    A dual number is of the form a + bε, where ε is an infinitesimal
+    with the property that ε^2 = 0.
+    The real part is a, and the dual part is b.
+    """
 
     def __init__(self, real: float, dual: float):
         self._real: float = real
